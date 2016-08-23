@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/mergeMap';
 
 @Component({
   moduleId: module.id,
@@ -19,11 +20,7 @@ export class AppComponent {
     this.term$
         .debounceTime(400)
         .distinctUntilChanged()
-        .subscribe(term => this.search(term));
-  }
-
-  search(term: string) {
-    this.service.search(term)
-                .subscribe(results => this.items = results);
+        .flatMap(term => this.service.search(term))
+        .subscribe(results => this.items = results);
   }
 }
